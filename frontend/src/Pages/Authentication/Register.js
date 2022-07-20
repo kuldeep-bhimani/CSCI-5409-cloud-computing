@@ -3,8 +3,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-//import FormControlLabel from "@mui/material/FormControlLabel";
-//import Checkbox from "@mui/material/Checkbox";
+
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -18,9 +17,8 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { useNavigate, useLocation } from "react-router-dom";
 // UserPool
 import UserPool from "../../UserPool/UserPool";
-
+import axios from "axios";
 // important for cloud
-import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 
 const theme = createTheme();
 
@@ -29,7 +27,9 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState([]);
+  const [image, setImage] = useState("");
+  //const [userData, setUserData] = useState([]);
+
   // Navigator
   const navigate = useNavigate();
 
@@ -39,31 +39,65 @@ export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(name, email, password, birthdate);
-    // Setting attribute
-    const nameAttribute = new CognitoUserAttribute({
-      Name: "name",
-      Value: name,
-    });
-    // const birthdateAttribute = new CognitoUserAttribute({
-    //   Name: "birthdate",
-    //   Value: birthdate,
-    // });
 
+    const userAttributes = [
+      {
+        Name: "email",
+        Value: email,
+      },
+      {
+        Name: "name",
+        Value: name,
+      },
+    ];
     // registering user to AWS Cognito
     const cognitoUser = UserPool.signUp(
       email,
       password,
-      [nameAttribute],
+      userAttributes,
       null,
-      (err, data) => {
+      async (err, data) => {
         if (err) {
           console.log("Error:", err);
         }
         if (data) {
-          console.log("Data:", typeof data.user);
-          setUserData(data.user);
-          localStorage.setItem("username", data.user.username);
-          navigate("/login");
+          // upload snippet to S3 bucket
+          const formData = new FormData();
+          formData.append("image", image);
+
+          const uploadResponse = await axios.post(
+            "http://localhost:5000/uploadpng",
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+          console.log("UPLOAD RESPONSE::", uploadResponse);
+
+          // uploading linked data with user in dynamo
+
+          //setUserData(data.user);
+          let userData = {
+            userSub: data.userSub,
+            email,
+            name,
+            birthdate: birthdate.toDateString(),
+            url:uploadResponse.data.Location
+          };
+
+          let requestOption = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData),
+          };
+
+          // TODO:: pass userData to lambda to store in DynamoDB
+          const response = await fetch(
+            `https://g2j4h3gq5omgr5ujrez4iprnve0kltmx.lambda-url.us-east-1.on.aws/`,
+            requestOption
+          );
+          if (response) {
+            console.log("Response::", response);
+            navigate("/login");
+          }
         }
       }
     );
@@ -143,6 +177,17 @@ export default function Register() {
                 id="password"
                 autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="snippet"
+                type="file"
+                id="snippet"
+                autoComplete="snippet"
+                onChange={(e) => setImage(e.target.files[0])}
               />
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
