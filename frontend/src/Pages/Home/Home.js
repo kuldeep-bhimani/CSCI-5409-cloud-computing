@@ -1,16 +1,12 @@
 import React from "react";
-
+import Card2 from "./Card2";
+import SwipeButton from "./SwipeButton";
+import "../../App.css";
+import Navbar from "./Navbar";
 const Home = () => {
   return (
-    <div>
-      <div class="form-group">
-        <label for="exampleFormControlTextarea1">Example textarea</label>
-        <textarea
-          class="form-control"
-          id="code"
-          rows="3"
-        ></textarea>
-      </div>
+    <div className="App">
+      <Navbar /> <Card2 /> <SwipeButton />
     </div>
   );
 };
