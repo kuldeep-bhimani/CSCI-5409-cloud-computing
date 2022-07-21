@@ -16,6 +16,8 @@ import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
 import UserPool from "../../UserPool/UserPool";
 import { useNavigate } from "react-router-dom";
 
+//localStorage
+import { setUserSub } from "../../localstorage/index";
 const theme = createTheme();
 
 export default function SignInSide() {
@@ -37,7 +39,10 @@ export default function SignInSide() {
 
     user.authenticateUser(authDetails, {
       onSuccess: (data) => {
-        console.log("onSuccess:", data);
+        console.log("onSuccess:", data.idToken.payload);
+
+        setUserSub(data.idToken.payload);
+        localStorage.setItem("email",data.idToken.payload.email)
         navigate("/home");
       },
       onFailure: (err) => {

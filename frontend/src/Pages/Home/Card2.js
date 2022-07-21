@@ -1,21 +1,27 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import TinderCard from "react-tinder-card";
 import "./Card2.css";
+import UserPool from '../../UserPool/UserPool';
 
 const Card2 = () => {
-  const [users, setUsers] = useState([
-    {
-      name: "kishan",
-      url: "https://images.unsplash.com/photo-1656947149483-f0f4af8f6f59?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60",
-    },
-    {
-      name: "Savaliya",
-      url: "https://images.unsplash.com/photo-1656866694773-76ce55a76559?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxOXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60",
-    },
-  ]);
+
+  const [users, setUsers] = useState([]);
+  useEffect(()=>{
+    fetch('http://localhost:5000/allusers',{
+      method:'GET',
+      headers:{
+        'Content-Type':'application/json'
+      }
+    }).then(response=>response.json()).then(result=>setUsers(result.Items))
+  },[])
+
+  
 
   const swiped = (direction, name) => {
     console.log("removing:" + name + " to: " + direction);
+      // add to liked array
+      console.log(UserPool.getCurrentUser())
+      // else skip it..
   };
 
   const outOfFrame = (name) => {
@@ -25,20 +31,23 @@ const Card2 = () => {
   return (
     <div className="tinderCard">
       <div className="tinderCard__cardContainer">
-        {users.map((user) => {
+        {users.map((user,index) => {
+          console.log(user.imgurl)
           return (
             <TinderCard
               className="swipe"
-              key={user.name}
+              key={index}
               preventSwipe={["up", "down"]}
-              onSwipe={(dir) => swiped(dir, user.name)}
-              onCardLeftScreen={() => outOfFrame(user.name)}
+              onSwipe={(dir) => swiped(dir, user.name.S)}
+              onCardLeftScreen={() => outOfFrame(user.name.S)}
             >
               <div
-                style={{ backgroundImage: `url(${user.url})` }}
+                style={{ backgroundImage: `url('${user.imgurl.S}')` }} //https://codematcherprofile.s3.amazonaws.com/dd3746b70824045d558a66161f40f25b.png
                 className="card"
               >
-                <h3>{user.name}</h3>
+               <meta name="referrer" content="same-origin" />
+              
+                <h3>{user.name.S}</h3>
               </div>
             </TinderCard>
           );

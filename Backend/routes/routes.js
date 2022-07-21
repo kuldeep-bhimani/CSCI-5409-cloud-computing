@@ -31,11 +31,11 @@ router.get("/", (req, res) => {
   res.send("Hello");
 });
 
-router.post("/convert", (req, res) => {
-  const { snippet } = req.body;
-  fs.writeFileSync(path.join(__dirname, "snippet.txt"), snippet.toString());
-  convert(snippet);
-});
+// router.post("/convert", (req, res) => {
+//   const { snippet } = req.body;
+//   fs.writeFileSync(path.join(__dirname, "snippet.txt"), snippet.toString());
+//   convert(snippet);
+// });
 
 
 router.post('/uploadpng',upload.single('image'),async (req,res)=>{
@@ -44,6 +44,7 @@ router.post('/uploadpng',upload.single('image'),async (req,res)=>{
     return res.status(200).json(result)
 })
 
+// function to upload files...
 const uploadFile = (file) =>{
 
   const fileStream = fs.createReadStream(file.path);
@@ -57,6 +58,24 @@ const uploadFile = (file) =>{
 return s3bucket.upload(uploadParamas).promise()
 
 }
+
+
+router.get('/allusers',async (req,res)=>{
+    var ddb = new aws.DynamoDB({apiVersion: '2012-08-10'});
+    var params = {
+      TableName:'user'
+    }
+
+    ddb.scan(params,(err,data)=>{
+      if(err){
+        console.log("Error:",err.message)
+      } else {
+        console.log("Success::")
+        return res.status(200).json(data)
+      }
+    })
+})
+
 
 
 module.exports = router;
