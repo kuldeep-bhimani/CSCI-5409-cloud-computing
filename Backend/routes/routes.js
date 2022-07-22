@@ -12,30 +12,25 @@ aws.config.update({ region: "us-east-1" });
 var s3bucket = new aws.S3({ apiVersion: "2006-03-01" });
 
 // convert function
-const convert = (snippet) => {
-  console.log("Here 1");
-  convertapi
-    .convert(
-      "png",
-      {
-        File: snippet,
-      },
-      "txt"
-    )
-    .then(function (result) {
-      result.saveFiles(path.join(__dirname, "snippet.png"));
-    });
-};
+// const convert = (snippet) => {
+//   console.log("Here 1");
+//   convertapi
+//     .convert(
+//       "png",
+//       {
+//         File: snippet,
+//       },
+//       "txt"
+//     )
+//     .then(function (result) {
+//       result.saveFiles(path.join(__dirname, "snippet.png"));
+//     });
+// };
 
 router.get("/", (req, res) => {
   res.send("Hello");
 });
 
-// router.post("/convert", (req, res) => {
-//   const { snippet } = req.body;
-//   fs.writeFileSync(path.join(__dirname, "snippet.txt"), snippet.toString());
-//   convert(snippet);
-// });
 
 
 router.post('/uploadpng',upload.single('image'),async (req,res)=>{
@@ -75,6 +70,7 @@ router.get('/allusers',async (req,res)=>{
       }
     })
 })
+
 
 
 

@@ -15,10 +15,18 @@ exports.handler = async (event) => {
             imgurl: userData.url
         }
     }
+    var likesParams = {
+        TableName:'likes',
+        Item:{
+            email:userData.email,
+            swipes:[]
+        }
+    }
     console.log("THIS IS PARAMS::",params);
     console.log("EMAIL:::",userData.email);
     try{
         console.log("RESPONSE::",await ddb.put(params).promise())
+        console.log("RESPONSE2::",await ddb.put(likesParams).promise())
     } catch(err){
         console.log("ERROR::",err.message);
     }

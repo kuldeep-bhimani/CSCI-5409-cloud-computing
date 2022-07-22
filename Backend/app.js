@@ -7,6 +7,7 @@ app.use(cors())
 
 app.use(express.json())
 app.use(require('./routes/routes'));
+app.use(require('./routes/docRoutes'));
 
 app.listen(PORT,()=>{
     console.log(`listening on port : ${PORT}.`);

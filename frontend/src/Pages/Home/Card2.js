@@ -1,7 +1,6 @@
 import React, { useState,useEffect } from "react";
 import TinderCard from "react-tinder-card";
 import "./Card2.css";
-import UserPool from '../../UserPool/UserPool';
 
 const Card2 = () => {
 
@@ -16,12 +15,21 @@ const Card2 = () => {
   },[])
 
   
+  
 
-  const swiped = (direction, name) => {
+  const swiped = (direction, name, email) => {
     console.log("removing:" + name + " to: " + direction);
       // add to liked array
-      console.log(UserPool.getCurrentUser())
-      // else skip it..
+      fetch('http://localhost:5000/updatelikes',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          email,
+          sEmail:localStorage.getItem("email")
+        })
+      })
   };
 
   const outOfFrame = (name) => {
@@ -32,13 +40,13 @@ const Card2 = () => {
     <div className="tinderCard">
       <div className="tinderCard__cardContainer">
         {users.map((user,index) => {
-          console.log(user.imgurl)
+          console.log(user)
           return (
             <TinderCard
               className="swipe"
               key={index}
               preventSwipe={["up", "down"]}
-              onSwipe={(dir) => swiped(dir, user.name.S)}
+              onSwipe={(dir) => swiped(dir, user.name.S,user.email.S)}
               onCardLeftScreen={() => outOfFrame(user.name.S)}
             >
               <div
