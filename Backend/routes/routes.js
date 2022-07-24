@@ -71,6 +71,30 @@ router.get('/allusers',async (req,res)=>{
     })
 })
 
+router.get('/user/:email',async (req,res)=>{
+  const {email} = req.params;
+  var ddb = new aws.DynamoDB({apiVersion: '2012-08-10'});
+  
+
+  var findParams = {
+    TableName : "user",
+    KeyConditionExpression : 'email = :emailValue', 
+    
+    ExpressionAttributeValues : {
+        ':emailValue' : {'S':email},
+    }
+  }
+    
+    ddb.query(findParams,(err,data)=>{
+      if(err){
+        console.log("ERROR:",err.message)
+      } else {
+        console.log('SUCCESS:',data.Items)
+        return res.status(200).json(data.Items[0])
+      }
+    })
+})
+
 
 
 

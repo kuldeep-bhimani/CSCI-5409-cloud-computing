@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card2 from "./Card2";
 import SwipeButton from "./SwipeButton";
 import "../../App.css";
 import Navbar from "./Navbar";
 const Home = () => {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch(`http://localhost:5000/getlikes/${localStorage.getItem("email")}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => setData(result))
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <div className="App">
-      <Navbar /> <Card2 /> <SwipeButton />
+      <Navbar type="home" /> <Card2 data={data} /> <SwipeButton />
     </div>
   );
 };

@@ -1,0 +1,135 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Dynamo table for users",
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "d47cc70d-4c7e-4f4b-8df2-6028a8811c78": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 205,
+                    "y": 89
+                },
+                "z": 0
+            }
+        }
+    },
+    "Parameters": {
+        "HashKeyElementName": {
+            "Type": "String",
+            "Default": "twitter_username",
+            "Description": "Partition Key Name"
+        },
+        "HashKeyElementType": {
+            "Type": "String",
+            "Default": "S",
+            "Description": "Partition Key Type"
+        }
+    },
+    "Resources": {
+        "rawTweetTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": "raw_tweet_table",
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": {
+                            "Ref": "HashKeyElementName"
+                        },
+                        "AttributeType": {
+                            "Ref": "HashKeyElementType"
+                        }
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": {
+                            "Ref": "HashKeyElementName"
+                        },
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 5
+                }
+            },
+
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d47cc70d-4c7e-4f4b-8df2-6028a8811c78"
+                }
+            }
+        },
+        "twitterAnalysisWordCloud": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": "twitter_analysis_wordcloud",
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": {
+                            "Ref": "HashKeyElementName"
+                        },
+                        "AttributeType": {
+                            "Ref": "HashKeyElementType"
+                        }
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": {
+                            "Ref": "HashKeyElementName"
+                        },
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 5
+                }
+            },
+
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d47cc70d-4c7e-4f4b-8df2-6028a8811c78"
+                }
+            }
+        },
+        "twitterSentimentTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": "twitter_sentiment_table",
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": {
+                            "Ref": "HashKeyElementName"
+                        },
+                        "AttributeType": {
+                            "Ref": "HashKeyElementType"
+                        }
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": {
+                            "Ref": "HashKeyElementName"
+                        },
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 5
+                }
+            },
+
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d47cc70d-4c7e-4f4b-8df2-6028a8811c78"
+                }
+            }
+        }
+    }
+}

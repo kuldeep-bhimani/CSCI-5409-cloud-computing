@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Role: ''
+Resources:
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: user_cf
+      AttributeDefinitions:
+        - AttributeName: "email"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "email"
+          KeyType: "HASH"
+      TimeToLiveSpecification:
+        AttributeName: "ExpirationTime"
+        Enabled: true
+      ProvisionedThroughput:
+        ReadCapacityUnits: "100"
+        WriteCapacityUnits: "100"
+
+  LikesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: likes_cf
+      AttributeDefinitions:
+        - AttributeName: "email"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "email"
+          KeyType: "HASH"
+      TimeToLiveSpecification:
+        AttributeName: "ExpirationTime"
+        Enabled: true
+      ProvisionedThroughput:
+        ReadCapacityUnits: "100"
+        WriteCapacityUnits: "100"
+    
+
+
+
+

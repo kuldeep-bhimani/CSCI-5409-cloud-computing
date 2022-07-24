@@ -80,7 +80,7 @@ export default function Register() {
             email,
             name,
             birthdate: birthdate.toDateString(),
-            url:uploadResponse.data.Location
+            url: uploadResponse.data.Location,
           };
 
           let requestOption = {
@@ -96,6 +96,21 @@ export default function Register() {
           );
           if (response) {
             console.log("Response::", response);
+            const subRes = await fetch(
+              `https://3ow5v2vvip2cjof27cgp6agwze0qfvff.lambda-url.us-east-1.on.aws/`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: email,
+                }),
+              }
+            );
+            if (subRes) {
+              console.log("SubRes::", subRes);
+            }
             navigate("/login");
           }
         }
