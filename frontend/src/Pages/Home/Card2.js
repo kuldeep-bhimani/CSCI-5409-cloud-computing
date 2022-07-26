@@ -5,7 +5,7 @@ import "./Card2.css";
 const Card2 = ({ data }) => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/allusers", {
+    fetch("http://g35-cloud.us-east-1.elasticbeanstalk.com/allusers", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -13,7 +13,7 @@ const Card2 = ({ data }) => {
     })
       .then((response) => response.json())
       .then((result) => {
-        setUsers(result.Items);
+        setUsers(result);
       });
   }, []);
 
@@ -61,7 +61,9 @@ const Card2 = ({ data }) => {
   const outOfFrame = (name) => {
     console.log("left: " + name);
   };
-
+  if (!users) {
+    return <h1>Loading...</h1>;
+  }
   return (
     <div className="tinderCard">
       <div className="tinderCard__cardContainer">

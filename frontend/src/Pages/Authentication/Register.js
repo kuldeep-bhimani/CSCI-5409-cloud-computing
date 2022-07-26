@@ -66,7 +66,7 @@ export default function Register() {
           formData.append("image", image);
 
           const uploadResponse = await axios.post(
-            "http://localhost:5000/uploadpng",
+            "http://g35-cloud.us-east-1.elasticbeanstalk.com/uploadpng",
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );
@@ -111,7 +111,7 @@ export default function Register() {
             if (subRes) {
               console.log("SubRes::", subRes);
             }
-            navigate("/login");
+            navigate("/");
           }
         }
       }
@@ -231,7 +231,7 @@ export default function Register() {
                   </Link>
                 </Grid> */}
                 <Grid item>
-                  <Link href="/login" variant="body2">
+                  <Link href="/" variant="body2">
                     {"Already have an account? Login"}
                   </Link>
                 </Grid>

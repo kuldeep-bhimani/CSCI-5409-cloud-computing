@@ -6,9 +6,14 @@ import Navbar from "./Navbar";
 const Home = () => {
   const [data, setData] = useState(null);
   useEffect(() => {
-    fetch(`http://localhost:5000/getlikes/${localStorage.getItem("email")}`, {
-      method: "GET",
-    })
+    fetch(
+      `http://g35-cloud.us-east-1.elasticbeanstalk.com/getlikes/${localStorage.getItem(
+        "email"
+      )}`,
+      {
+        method: "GET",
+      }
+    )
       .then((response) => response.json())
       .then((result) => setData(result))
       .catch((err) => console.log(err));
