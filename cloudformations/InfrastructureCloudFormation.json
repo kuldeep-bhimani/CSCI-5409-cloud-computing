@@ -2,7 +2,6 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Infrastructure of the CodeMatcher (Group-35).",
   "Resources": {
-
     "CodeMatcherUserPool": {
       "Type": "AWS::Cognito::UserPool",
       "Properties": {
@@ -20,8 +19,8 @@
         "Policies": {
           "PasswordPolicy": {
             "MinimumLength": 8,
-            "RequireLowercase": false,
-            "RequireNumbers": false,
+            "RequireLowercase": true,
+            "RequireNumbers": true,
             "RequireSymbols": false,
             "RequireUppercase": false,
             "TemporaryPasswordValidityDays": 7
@@ -41,7 +40,7 @@
         "VerificationMessageTemplate": {
           "DefaultEmailOption": "CONFIRM_WITH_LINK"
         },
-        "UserPoolName": "codematcher-cf"
+        "UserPoolName": "codematcher-cf4"
       }
     },
     "ClientOfUserPool": {
@@ -58,10 +57,17 @@
     "DomainOfUserPool": {
       "Type": "AWS::Cognito::UserPoolDomain",
       "Properties": {
-        "Domain": "codemath",
+        "Domain": "codemathg35cf4",
         "UserPoolId": {
           "Ref": "CodeMatcherUserPool"
         }
+      }
+    },
+
+    "MyInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": ["LabRole"]
       }
     },
 
@@ -69,7 +75,16 @@
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
         "DistributionConfig": {
-          "CacheBehaviors": {
+          "Origins": [
+            {
+              "DomainName": "g35frontend.s3.us-east-1.amazonaws.com",
+              "Id": "g35frontend",
+              "S3OriginConfig": {
+                "OriginAccessIdentity": ""
+              }
+            }
+          ],
+          "DefaultCacheBehavior": {
             "AllowedMethods": [
               "GET",
               "HEAD",
@@ -81,11 +96,29 @@
             ],
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
             "Compress": true,
-            "MaxTTL": 31536000,
-            "MinTTL": 1,
             "TargetOriginId": "g35frontend",
             "ViewerProtocolPolicy": "allow-all"
           },
+          "CacheBehaviors": [
+            {
+              "AllowedMethods": [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+                "PUT",
+                "PATCH",
+                "POST",
+                "DELETE"
+              ],
+              "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+              "PathPattern": "*",
+              "Compress": true,
+              "MaxTTL": 31536000,
+              "MinTTL": 1,
+              "TargetOriginId": "g35frontend",
+              "ViewerProtocolPolicy": "allow-all"
+            }
+          ],
           "Comment": "This distribution is for g35-codematcher.",
           "CustomErrorResponses": [
             {
@@ -109,11 +142,26 @@
     "CodeMatcherEBSEnv": {
       "Type": "AWS::ElasticBeanstalk::Environment",
       "Properties": {
-        "ApplicationName": "g35-cf",
+        "ApplicationName": "g35",
         "Description": "The backend of the codematcher application will hosted on this AWS ElasticBeanstalk environment.",
-        "EnvironmentName": "G35-env-cf",
+        "EnvironmentName": "G35-env-cf4",
         "OperationsRole": "arn:aws:iam::404283073288:role/LabRole",
-        "SolutionStackName": "Node.js",
+        "OptionSettings": [
+          {
+            "Namespace": "aws:elasticbeanstalk:environment",
+            "OptionName": "EnvironmentType",
+            "Value": "LoadBalanced"
+          },
+          {
+            "Namespace": "aws:autoscaling:launchconfiguration",
+            "OptionName": "IamInstanceProfile",
+            "Value": {
+              "Ref": "MyInstanceProfile"
+            }
+          }
+        ],
+
+        "SolutionStackName": "64bit Amazon Linux 2 v5.5.4 running Node.js 16",
         "VersionLabel": "Sample Application-3"
       }
     },
@@ -121,7 +169,7 @@
     "UserData": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "userData_cf_1",
+        "FunctionName": "userData_cf_3",
         "Handler": "userData/index.handler",
         "Role": "arn:aws:iam::404283073288:role/LabRole",
         "Code": {
@@ -136,7 +184,7 @@
     "UserLike": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "userLike_cf_1",
+        "FunctionName": "userLike_cf_3",
         "Handler": "userLike/index.handler",
         "Role": "arn:aws:iam::404283073288:role/LabRole",
         "Code": {
@@ -151,7 +199,7 @@
     "SubscriberFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "subscriberFunction_cf_1",
+        "FunctionName": "subscriberFunction_cf_3",
         "Handler": "subscriberFunction/index.handler",
         "Role": "arn:aws:iam::404283073288:role/LabRole",
         "Code": {
@@ -162,12 +210,12 @@
         "Timeout": 3,
         "MemorySize": 128
       },
-      "DependsOn":"MatchSnsTopic"
+      "DependsOn": "MatchSnsTopic"
     },
     "PublisherFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "publisherFunction_cf_1",
+        "FunctionName": "publisherFunction_cf_3",
         "Handler": "publisherFunction/index.handler",
         "Role": "arn:aws:iam::404283073288:role/LabRole",
         "Code": {
@@ -178,7 +226,7 @@
         "Timeout": 3,
         "MemorySize": 128
       },
-      "DependsOn":"MatchSnsTopic"
+      "DependsOn": "MatchSnsTopic"
     },
 
     "MatchSnsTopic": {
@@ -192,7 +240,7 @@
             "Protocol": "email"
           }
         ],
-        "TopicName": "match"
+        "TopicName": "matchcf4"
       }
     }
   }

@@ -22,7 +22,7 @@
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
         },
-        "TableName": "user_cf_4"
+        "TableName": "user_cf_7"
       }
     },
     "LikesTable": {
@@ -86,7 +86,7 @@
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
         },
-        "TableName": "likes_cf_4"
+        "TableName": "likes_cf_7"
       }
     },
 
@@ -95,7 +95,7 @@
       "Type": "AWS::S3::Bucket",
       "Description": "use to store the profile pictures of the user.",
       "Properties": {
-        "BucketName": "profile-of-user-g35",
+        "BucketName": "profile-of-user-g35-cf-55",
         "AccessControl": "PublicRead",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": false,
@@ -122,7 +122,7 @@
       "Type": "AWS::S3::Bucket",
       "Description": "use to cache react build of frontend",
       "Properties": {
-        "BucketName": "frontend-g35-cf",
+        "BucketName": "frontend-g35-cf-55",
         "AccessControl": "PublicRead",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": false,
@@ -149,7 +149,7 @@
       "Type": "AWS::S3::Bucket",
       "Description": "use to store the lambda function zip to use it in cloud formation",
       "Properties": {
-        "BucketName": "lambda-g35-cf",
+        "BucketName": "lambda-g35-cf-55",
         "AccessControl": "PublicRead",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": false,
